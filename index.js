@@ -9,7 +9,11 @@ var face = new PIXI.Texture.fromImage("face.png");
 var gravity = -0.15;
 var faces = [];
 
-function resetSprite (sprite) {
+function randomSpeedX () {
+    return (window.innerWidth / 150) * (Math.random() - 0.5);
+}
+function randomSpeedY () {
+    return (window.innerHeight / 90) + (Math.random() * 7); 
 }
 
 function start () {
@@ -25,10 +29,9 @@ function start () {
         faceSprite.x = Math.random() * window.innerWidth;
         faceSprite.y = window.innerHeight + 100;
         faceSprite.speed = {};
-        faceSprite.speed.x = 7 * (Math.random() - 0.5);
-        faceSprite.speed.y = 9 + Math.random() * 4;
+        faceSprite.speed.x = randomSpeedX();
+        faceSprite.speed.y = randomSpeedY();
         faceSprite.speed.rotation = 0.03 * (Math.random() - 0.5);
-        resetSprite(faceSprite);
         faces.push(faceSprite);
         container.addChild(faceSprite);
     }
@@ -53,8 +56,8 @@ function loop () {
         if (faceSprite.y > window.innerHeight + 100) {
             faceSprite.x = Math.random() * window.innerWidth;
             faceSprite.y = window.innerHeight + 100;
-            faceSprite.speed.x = 7 * (Math.random() - 0.5);
-            faceSprite.speed.y = 9 + Math.random() * 4;
+            faceSprite.speed.x = randomSpeedX();
+            faceSprite.speed.y = randomSpeedY();
             faceSprite.speed.rotation = 0.03 * (Math.random() - 0.5);
         }
     });
