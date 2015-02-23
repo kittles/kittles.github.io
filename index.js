@@ -35,6 +35,7 @@ function start () {
 
     loop();
 }
+setTimeout(start, 1000);
 
 renderer.view.style.position = "absolute";
 window.addEventListener("resize", function () {
