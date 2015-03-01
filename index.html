@@ -5,14 +5,21 @@
             margin: 0;
         }
         #text-marquee {
-            margin-top: 25px;
-            height: 40px;
+            position: fixed;
+            width: 100%;
+            z-index:100;
+            height: 50px;
+            background-color: rgba(200,200,200,0.5);
             border-bottom: 1px solid black;
             text-align: center;
+            -webkit-transition: all .5s ease-out 0.1s;
+            -moz-transition: all .5s ease-out 0.1s;
+            -o-transition: all .5s ease-out 0.1s;
+            transition: all .5s ease-out 0.1s
         }
     </style>
     <script src="underscore.js"></script>
-    <script src="pixi.min.js"></script>
+    <script src="pixi.js"></script>
 </head>
 <body>
     <div id="text-marquee">
@@ -28,7 +35,7 @@
     </div>
     <script src="index.js"></script>
     <!--
-        underline should pop out like springs and spring into place 
+        underline should pop out like springs and spring into place
         over time
     -->
 </body>
