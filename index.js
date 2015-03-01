@@ -9,12 +9,13 @@ var stage = new PIXI.Stage(0xFFFFFF, true),
     faceSprite,
     rndm = Math.random,
     GRAVITY = -0.15,
-    NUMBER_FACES = 10,
+    NUMBER_FACES = 15,
     FACE_SCALE = 5,
     CHANGE_SCALE_TIMEOUT = 8000,
     MAX_ROTATION = 0.03,
     AudioContext = window.AudioContext || window.webkitAudioContext,
     audioCtx = new AudioContext(),
+    listener = audioCtx.listener,
     reverb = audioCtx.createConvolver(),
     waveTypes = [
         "sine",
@@ -41,6 +42,9 @@ var stage = new PIXI.Stage(0xFFFFFF, true),
     bufferRequest,
     instrumentQueue,
     textMarquee = document.getElementById("text-marquee");
+
+// position listener for panning
+listener.setPosition(0, 0, 0, 0, 0, 0);
 
 // pixi canvas resizing handler
 renderer.view.style.position = "absolute";
@@ -95,11 +99,15 @@ function Instrument () {
     this.panner.connect(this.gain);
     this.gain.connect(reverb);
     this.gain.gain.value = 0;
+    this.panner.panningModel = "equalpower";
     this.osc.type = randomChoice(waveTypes);
     this.osc.start();
     this.play = function play (face) {
+        var x = 10 * (face.sprite.x / window.innerWidth - 0.5),
+            y = 0,
+            z = 10 - Math.abs(x);
         this.osc.frequency.setValueAtTime(randomChoice(scale), audioCtx.currentTime);
-        this.panner.setPosition(-1 * (0.5 - face.sprite.x / window.innerWidth), window.innerHeight - face.sprite.y, 0);
+        this.panner.setPosition(x, y, z);
         this.gain.gain.setValueAtTime(face.speed.y / 3, audioCtx.currentTime);
         this.gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.15);
     };
