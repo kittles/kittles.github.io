@@ -83,7 +83,7 @@ function onbufferload () {
 function ondecodesuccess (buffer) {
     reverb.buffer = buffer;
     reverb.connect(audioCtx.destination);
-    start();
+    setTimeout(start, 1000);
 } 
 function ondecodeerror (e) {
     "Error with decoding audio data" + e.err;
