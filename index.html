@@ -17,15 +17,33 @@
             -o-transition: all .5s ease-out 0.1s;
             transition: all .5s ease-out 0.1s
         }
+        #mute {
+            position: fixed;
+            z-index: 101;
+            top: 10px;
+            left: 10px;
+            cursor: pointer;
+            -webkit-transition: all .2s;
+            -moz-transition: all .2s;
+            -o-transition: all .2s;
+            transition: all .2s;
+            opacity: 0.75;
+        }
+        #mute.muted {
+            opacity: 0.25;
+        }
+
     </style>
     <script src="underscore.js"></script>
+    <script src="q.js"></script>
     <script src="pixi.js"></script>
 </head>
 <body>
+    <img id="mute" src="unmute.png" alt="mute">
     <div id="text-marquee">
         <p>
             Hi, I'm Patrick Brooks.
-            If you are here, you are might be looking for help with
+            If you are here, you might be looking for help with
             <a href="http://www.github.com/kittles">software</a>
             or
             <a href="https://soundcloud.com/patwbrooks">music</a>
@@ -34,8 +52,4 @@
         </p>
     </div>
     <script src="index.js"></script>
-    <!--
-        underline should pop out like springs and spring into place
-        over time
-    -->
 </body>

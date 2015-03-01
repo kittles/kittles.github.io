@@ -177,7 +177,7 @@ PIXI.RETINA_PREFIX = "@2x";
  * @default false
  * @static
  */
-PIXI.dontSayHello = false;
+PIXI.dontSayHello = true;
 
 /**
  * The default render options if none are supplied to
