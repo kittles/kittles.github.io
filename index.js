@@ -1,20 +1,21 @@
 /* global PIXI,_,Q */
+// IDEA: should have x start position be determined by pitch
+var FACE_URL = "face.png",
+    GRAVITY = -0.15,
+    NUMBER_FACES = 8,
+    FACE_SCALE = 5,
+    MAX_ROTATION = 0.03,
+    EIGTH_NOTE = 220;
+
 var stage = new PIXI.Stage(0xFFFFFF, true),
     renderer = PIXI.autoDetectRenderer(window.innerWidth, window.innerHeight, {
         antialias: false
     }),
     container = new PIXI.DisplayObjectContainer(),
-    FACE_URL = "face.png",
     faceTexture,
     faces,
     faceSprite,
     rndm = Math.random,
-    GRAVITY = -0.15,
-    NUMBER_FACES = 8,
-    FACE_SCALE = 5,
-    CHANGE_STUFF_TIMEOUT = 8000,
-    MAX_ROTATION = 0.03,
-    EIGTH_NOTE = 200,
     AudioContext = window.AudioContext || window.webkitAudioContext,
     audioCtx = new AudioContext(),
     listener = audioCtx.listener,
@@ -47,6 +48,7 @@ var stage = new PIXI.Stage(0xFFFFFF, true),
     instrumentQueue,
     shuffleCounter = 0,
     waveTypeCounter = 0,
+    launchCounter = 0,
     textMarquee = document.getElementById("text-marquee"),
     muteButton = document.getElementById("mute");
 
@@ -64,7 +66,6 @@ function init () {
     shape.shuffleShape();
     setScale();
     setWaveType();
-    setInterval(changeStuff, CHANGE_STUFF_TIMEOUT);
     faces = _.times(NUMBER_FACES, newFace);
     renderer.view.style.position = "absolute";
     window.addEventListener("resize", resizeStage);
@@ -127,10 +128,11 @@ function Instrument () {
         this.gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + decay);
     };
     this.playFace = function playFace (face) {
-        this.osc.type = waveType;
         var x = 10 * (face.sprite.x / window.innerWidth - 0.5),
             y = 0,
             z = 10 - Math.abs(x);
+
+        this.osc.type = waveType;
         this.osc.frequency.setValueAtTime(getNextPitch(), audioCtx.currentTime);
         this.panner.setPosition(x, y, z);
         setTimeout(this.noteOn.bind(this, face.speed.y / 3), 10);
@@ -143,6 +145,7 @@ function Face () {
     this.sprite.height /= FACE_SCALE;
     this.sprite.pivot.x = this.sprite.width / 2;
     this.sprite.pivot.y = this.sprite.height / 2;
+    this.sprite.alpha = 1;
     // initialize below viewport
     this.sprite.y = belowViewport();
     this.isDone = true;
@@ -152,14 +155,17 @@ function Face () {
         instrumentQueue.play(this);
     };
     this.reset = function reset () {
+        this.sprite.alpha = 1;
         this.beenInView = false;
         this.isDone = false;
-        this.sprite.x = randomPositionX();
         this.sprite.y = belowViewport();
         this.speed.x = randomSpeedX();
         this.speed.y = randomSpeedY();
         this.speed.rotation = randomRotation();
-        this.playNote();
+        this.playNote(); 
+        //this.sprite.x = randomPositionX();
+        // use scale degree for placement instead
+        this.sprite.x = scaleDegreeX();
     };
     //this.reset();
     this.isBelowViewport = function isBelowViewport () {
@@ -182,6 +188,7 @@ function Face () {
                 _.noop();
             }
         }
+        this.sprite.alpha -= 0.008;
         this.speed.y += GRAVITY;
         this.sprite.x += this.speed.x;
         this.sprite.y -= this.speed.y;
@@ -236,7 +243,7 @@ function newInstrument () {
     return new Instrument();
 }
 function randomSpeedX () {
-    return (window.innerWidth / 150) * (rndm() - 0.5);
+    return (window.innerWidth / 850) * (rndm() - 0.5);
 }
 function randomSpeedY () {
     return (window.innerHeight / 90) + (rndm() * 7);
@@ -292,7 +299,9 @@ function unmuteSound () {
     masterGain.gain.linearRampToValueAtTime(1, audioCtx.currentTime + 0.1);
 }
 function getNextPitch () {
-    return scale[shape.next()];
+    var np = scale[shape.next()];
+    console.log(np);
+    return np;
 }
 function changeStuff () {
     setScale();
@@ -316,6 +325,16 @@ function tryLaunchingFace () {
     if (freeFaces().length > 0) {
         if (Math.random() > 0.5) {
             freeFaces()[0].reset();   
+            launchCounter++;
+            launchCounter %= (scale.length * 3);
+            if (launchCounter === 0) {
+                changeStuff();
+            }
         }
     }
+}
+function scaleDegreeX () {
+    var x = (window.innerWidth / scale.length) * shape.shape[shape.index];
+    x += window.innerWidth / (scale.length * 2);
+    return x;
 }
