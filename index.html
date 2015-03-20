@@ -8,7 +8,6 @@
             position: fixed;
             width: 100%;
             z-index:100;
-            height: 50px;
             background-color: rgba(200,200,200,0.5);
             border-bottom: 1px solid black;
             text-align: center;
@@ -32,6 +31,10 @@
         #mute.muted {
             opacity: 0.25;
         }
+        #text-marquee p {
+            margin-left: 40px;
+            margin-right: 40px;
+        }
 
     </style>
     <script src="underscore.js"></script>
@@ -52,4 +55,12 @@
         </p>
     </div>
     <script src="index.js"></script>
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+        ga('create', 'UA-48713502-1', 'auto');
+        ga('send', 'pageview');
+    </script>
 </body>
