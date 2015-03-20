@@ -80,12 +80,33 @@ var stage = new PIXI.Stage(0xFFFFFF, true),
     }.init();
 
 // get assets then call init
-Q.all([getBuffer(), getFace()]).then(function () {
-    console.log("got buffer and face");
-    init();
-}, function () {
-    console.error("error initializing");
-});
+var userAgent = window.navigator.userAgent;
+
+if (userAgent.match(/iPad/i) || userAgent.match(/iPhone/i)) {
+    window.addEventListener("touchstart", unlockAudio, false);
+} else {
+    loadAssets();
+}
+
+
+function unlockAudio () {
+    var buffer = audioCtx.createBuffer(1, 1, 22050),
+        source = audioCtx.createBufferSource();
+    window.removeEventListener("touchstart", unlockAudio);
+    source.buffer = buffer;
+    source.connect(audioCtx.destination);
+    source.noteOn(0);
+    loadAssets();
+}
+
+function loadAssets () {
+    Q.all([getBuffer(), getFace()]).then(function () {
+        console.log("got buffer and face");
+        init();
+    }, function () {
+        console.error("error initializing");
+    });
+}
 
 
 function init () {
